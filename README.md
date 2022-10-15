@@ -30,6 +30,8 @@
 
 ```http request
 GET http://10.31.0.10:801/eportal/portal/login?user_account=000000000@telecom&user_password=000000
+```
+```text
            --------------                                   -------------------               ------
             ↑认证服务器↑                                       ↑账号↑                           ↑密码↑
 ```
