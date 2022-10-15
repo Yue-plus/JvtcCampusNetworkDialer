@@ -28,12 +28,10 @@
 
 本质上是向认证服务器发一条 `GET` 请求：
 
-```http request
-GET http://10.31.0.10:801/eportal/portal/login?user_account=000000000@telecom&user_password=000000
-```
 ```text
-           --------------                                   -------------------               ------
-            ↑认证服务器↑                                       ↑账号↑                           ↑密码↑
+GET http://10.31.0.10:801/eportal/portal/login?user_account=000000000@telecom&user_password=000000
+           --------------                                   -----------------               ------
+            ↑认证服务器↑                                       ↑账号↑                        ↑密码↑
 ```
 
 账号由 **学号** 与运营商代码组成。
