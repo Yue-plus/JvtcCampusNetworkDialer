@@ -1,46 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:jvtc_campus_network_dialer/settings.dart';
 
 import 'button.dart';
 
-void main() => runApp(const DialerApp());
+const String title = '九职校园网拨号器';
 
-class DialerApp extends StatefulWidget {
-  const DialerApp({super.key});
+void main() => runApp(MaterialApp(
+      title: title,
+      color: const Color(0xFF22BBFF),
+      theme: ThemeData.dark(),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => _Home(),
+        '/settings': (BuildContext context) => const Settings(),
+      },
+      debugShowCheckedModeBanner: false,
+    ));
 
-  static const String title = '九职校园网';
-
+class _Home extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _DialerAppState();
+  State<StatefulWidget> createState() => _HomeState();
 }
 
-class _DialerAppState extends State<DialerApp> {
-  final IconData _linkState = Icons.link_off;
+class _HomeState extends State<_Home> {
+  bool _isLinked = false;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: DialerApp.title,
-      color: const Color(0xFF22BBFF),
-      theme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(title: const Text(DialerApp.title)),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(_linkState, size: 256, color: Colors.grey),
-              const Text('log...'),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Button(icon: Icons.settings, text: '设置', onPressed: () {}),
-                  const SizedBox(width: 12),
-                  Button(icon: Icons.refresh, text: '重连', onPressed: () {}),
-                ],
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(title: const Text(title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _isLinked ? Icons.link : Icons.link_off,
+              size: 256,
+              color: _isLinked ? Colors.green : Colors.yellow,
+            ),
+            const Text('log...'),
+            const SizedBox(height: 32),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Button(
+                  icon: Icons.settings,
+                  text: '设置',
+                  onPressed: () => Navigator.pushNamed(context, '/settings'),
+                ),
+                const SizedBox(width: 12),
+                Button(
+                  icon: Icons.refresh,
+                  text: '重连',
+                  onPressed: () => setState(() => _isLinked = !_isLinked),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
