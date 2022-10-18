@@ -68,7 +68,8 @@ class _SettingState extends State<Settings> {
                       DropdownMenuItem(value: ISP.unicom, child: Text('联通')),
                       DropdownMenuItem(value: ISP.cmcc, child: Text('移动')),
                     ],
-                    onChanged: (value) => setState(() => isp = value ?? ISP.cmcc),
+                    onChanged: (value) =>
+                        setState(() => isp = value ?? ISP.telecom),
                   ),
                 ],
               ),

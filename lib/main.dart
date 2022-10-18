@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jvtc_campus_network_dialer/settings.dart';
 
 import 'button.dart';
@@ -14,11 +15,18 @@ void main() => runApp(MaterialApp(
         '/': (BuildContext context) => _Home(),
         '/settings': (BuildContext context) => const Settings(),
       },
-      locale: const Locale.fromSubtags(
-        languageCode: 'zh',
-        scriptCode: 'Hans',
-        countryCode: 'CN',
-      ),
+      supportedLocales: const [
+        Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hans',
+          countryCode: 'CN',
+        ),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
     ));
 
