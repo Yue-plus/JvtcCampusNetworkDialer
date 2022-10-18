@@ -14,6 +14,11 @@ void main() => runApp(MaterialApp(
         '/': (BuildContext context) => _Home(),
         '/settings': (BuildContext context) => const Settings(),
       },
+      locale: const Locale.fromSubtags(
+        languageCode: 'zh',
+        scriptCode: 'Hans',
+        countryCode: 'CN',
+      ),
       debugShowCheckedModeBanner: false,
     ));
 
