@@ -21,7 +21,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingState extends State<Settings> {
-  final GlobalKey _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   // https://flutter.cn/docs/cookbook/persistence/key-value
   late final SharedPreferences prefs;
@@ -100,7 +100,7 @@ class _SettingState extends State<Settings> {
       width: 800,
       padding: const EdgeInsets.only(top: 32),
       child: ElevatedButton(
-        onPressed: () => _save(),
+        onPressed: () => _formKey.currentState!.validate() ? _save() : null,
         child: const Padding(
           padding: EdgeInsets.all(8),
           child: Text('保存', style: TextStyle(fontSize: 18)),
@@ -157,7 +157,7 @@ class _SettingState extends State<Settings> {
           padding: const EdgeInsets.all(8),
           child: Form(
             key: _formKey,
-            autovalidateMode: AutovalidateMode.always,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
