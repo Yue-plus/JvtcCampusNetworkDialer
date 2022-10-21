@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
 
 import 'settings.dart';
@@ -96,11 +97,9 @@ class _HomeState extends State<_Home> {
               'http://$authHost/eportal/portal/login?user_account=$stuNum%40$isp&user_password=$password'))
           .timeout(const Duration(seconds: 2));
       if (response.statusCode == 200) {
-        setState(() {
-          _isLinked = true;
-          _netInfo = response.body;
-        });
+        setState(() => _isLinked = true);
       }
+      setState(() => _netInfo = response.body);
     } on TimeoutException {
       setState(() => _netInfo = '认证服务器超时未响应！');
     } catch (e) {
@@ -116,25 +115,25 @@ class _HomeState extends State<_Home> {
     // 显示今日星期、断网时段
     switch (DateTime.now().weekday) {
       case 1:
-        todayInfo = '今天是星期一  24 点需重新登入';
+        todayInfo = '今天是星期一  23:50 需重新登入';
         break;
       case 2:
-        todayInfo = '今天是星期二  24 点需重新登入';
+        todayInfo = '今天是星期二  23:50 需重新登入';
         break;
       case 3:
-        todayInfo = '今天是星期三  24 点到次日 7 点断网';
+        todayInfo = '今天是星期三  23:50 到次日 7 点断网';
         break;
       case 4:
-        todayInfo = '今天是星期四  23 点到 24 点断网';
+        todayInfo = '今天是星期四  23:50~24:00 点断网';
         break;
       case 5:
-        todayInfo = '今天是星期五  24 点需重新登入';
+        todayInfo = '今天是星期五  23:50 需重新登入';
         break;
       case 6:
-        todayInfo = '今天是星期六  24 点到次日 7 点断网';
+        todayInfo = '今天是星期六  23:50 到次日 7 点断网';
         break;
       case 7:
-        todayInfo = '今天是星期日  23 点到 24 点断网';
+        todayInfo = '今天是星期日  22:50~24:00 断网';
         break;
       default:
         todayInfo = '(っ °Д °;)っ';
@@ -145,7 +144,16 @@ class _HomeState extends State<_Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text(title)),
+      appBar: AppBar(
+        title: const Text(title),
+        actions: [
+          IconButton(
+            onPressed: () => launchUrl(Uri.parse(
+                'https://github.com/Yue-plus/JvtcCampusNetworkDialer')),
+            icon: const Icon(Icons.info),
+          )
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
