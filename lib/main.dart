@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,10 +69,15 @@ class _HomeState extends State<_Home> {
   }
 
   Future<void> _linkStart() async {
+    setState(() {
+      _isLinked = false;
+      _netInfo = '正在连接……';
+    });
+
     var prefs = await SharedPreferences.getInstance();
     var authHost = prefs.getString('authHost') ?? '10.31.0.10:801';
     var stuNum = prefs.getString('stuNum') ?? '';
-    var password = prefs.getString('key') ?? '';
+    var password = prefs.getString('password') ?? '';
 
     String isp;
     switch (prefs.getString('isp')) {
@@ -89,8 +96,13 @@ class _HomeState extends State<_Home> {
               'http://$authHost/eportal/portal/login?user_account=$stuNum%40$isp&user_password=$password'))
           .timeout(const Duration(seconds: 2));
       if (response.statusCode == 200) {
-        setState(() => _netInfo = response.body);
+        setState(() {
+          _isLinked = true;
+          _netInfo = response.body;
+        });
       }
+    } on TimeoutException {
+      setState(() => _netInfo = '认证服务器超时未响应！');
     } catch (e) {
       setState(() => _netInfo = e.toString());
     }
