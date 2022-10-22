@@ -96,7 +96,8 @@ class _HomeState extends State<_Home> {
       var response = await get(Uri.parse(
               'http://$authHost/eportal/portal/login?user_account=$stuNum%40$isp&user_password=$password'))
           .timeout(const Duration(seconds: 2));
-      if (response.statusCode == 200) {
+      if (response.body.indexOf("已经在线") > 0 ||
+          response.body.indexOf("认证成功") > 0) {
         setState(() => _isLinked = true);
       }
       setState(() => _netInfo = response.body);
@@ -115,19 +116,19 @@ class _HomeState extends State<_Home> {
     // 显示今日星期、断网时段
     switch (DateTime.now().weekday) {
       case 1:
-        todayInfo = '今天是星期一  23:50 需重新登入';
+        todayInfo = '今天是星期一  不断网';
         break;
       case 2:
-        todayInfo = '今天是星期二  23:50 需重新登入';
+        todayInfo = '今天是星期二  不断网';
         break;
       case 3:
         todayInfo = '今天是星期三  23:50 到次日 7 点断网';
         break;
       case 4:
-        todayInfo = '今天是星期四  23:50~24:00 点断网';
+        todayInfo = '今天是星期四  22:50~24:00 点断网';
         break;
       case 5:
-        todayInfo = '今天是星期五  23:50 需重新登入';
+        todayInfo = '今天是星期五  不断网';
         break;
       case 6:
         todayInfo = '今天是星期六  23:50 到次日 7 点断网';
