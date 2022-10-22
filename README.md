@@ -51,4 +51,10 @@ GET http://10.31.0.10:801/eportal/portal/login?user_account=000000000@telecom&us
 
 ### APP
 
-使用 [Flutter](https://flutter.cn/docs/get-started/install) 开发中……
+![](./img/demo.png)
+
+使用 [Flutter](https://flutter.cn/docs/get-started/install) 开发，已经支持 Windows 与 Android。
+
+请前往 [Releases](https://github.com/Yue-plus/JvtcCampusNetworkDialer/releases)
+页面下载最新版本使用，遇到任何问题请到 [Issues](https://github.com/Yue-plus/JvtcCampusNetworkDialer/issues/new)
+发送反馈。
