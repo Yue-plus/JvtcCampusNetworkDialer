@@ -10,7 +10,14 @@ $AUTH_HOST = "10.31.0.10:801"
 # - 移动为：`@cmcc`
 $USER_ACCOUNT = "000000000@telecom"
 
+# 自动重播间隔（秒）
+$SLEEP_TIME = 8
+
 # 密码
 $USER_PASSWORD = "000000"
 
-Invoke-WebRequest "http://${AUTH_HOST}/eportal/portal/login?user_account=${USER_ACCOUNT}&user_password=${USER_PASSWORD}"
+while ($true) {
+    Invoke-WebRequest "http://${AUTH_HOST}/eportal/portal/login?user_account=${USER_ACCOUNT}&user_password=${USER_PASSWORD}"
+    Start-Sleep $SLEEP_TIME
+    Clear-Host
+}
