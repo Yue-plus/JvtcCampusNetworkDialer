@@ -14,7 +14,9 @@ const String title = '九职校园网拨号器';
 void main() => runApp(MaterialApp(
       title: title,
       color: const Color(0xFF22BBFF),
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark(
+        useMaterial3: true,
+      ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => _Home(),
