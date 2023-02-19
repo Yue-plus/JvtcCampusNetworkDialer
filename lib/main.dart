@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart';
 
 import 'settings.dart';
-import 'button.dart';
 
 const String title = '九职校园网拨号器';
 
@@ -45,31 +44,17 @@ class _Home extends StatefulWidget {
 class _HomeState extends State<_Home> {
   bool _isLinked = false;
 
-  /// 今日星期、断网时段
+  /// 今日星期、断网时段等……
   late String todayInfo;
 
   /// 网络状态
   String _netInfo = '未连接到校园网';
 
-  Row _buttonGroup() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Button(
-          icon: Icons.settings,
-          text: '设置',
-          onPressed: () => Navigator.pushNamed(context, '/settings'),
-        ),
-        const SizedBox(width: 12),
-        Button(
-          icon: Icons.refresh,
-          text: '重连',
-          // onPressed: () => setState(() => _isLinked = !_isLinked),
-          onPressed: _linkStart,
-        ),
-      ],
-    );
-  }
+  /// 自动重播计数
+  int _reconnectCount = 0;
+
+  /// 断线计数
+  int _disconnection = 0;
 
   Future<void> _linkStart() async {
     setState(() {
@@ -81,6 +66,7 @@ class _HomeState extends State<_Home> {
     var authHost = prefs.getString('authHost') ?? '10.31.0.10:801';
     var stuNum = prefs.getString('stuNum') ?? '';
     var password = prefs.getString('password') ?? '';
+    var reconnectInterval = prefs.getDouble('reconnectInterval') ?? 8.0;
 
     String isp;
     switch (prefs.getString('isp')) {
@@ -94,20 +80,36 @@ class _HomeState extends State<_Home> {
         isp = 'telecom';
     }
 
-    try {
-      var response = await get(Uri.parse(
-              'http://$authHost/eportal/portal/login?user_account=$stuNum%40$isp&user_password=$password'))
-          .timeout(const Duration(seconds: 2));
-      if (response.body.indexOf("已经在线") > 0 ||
-          response.body.indexOf("认证成功") > 0) {
-        setState(() => _isLinked = true);
+    void link() async {
+      try {
+        var response = await get(Uri.parse(
+                'http://$authHost/eportal/portal/login?user_account=$stuNum%40$isp&user_password=$password'))
+            .timeout(const Duration(seconds: 2));
+        if (response.body.indexOf("已经在线") > 0 ||
+            response.body.indexOf("认证成功") > 0) {
+          setState(() => {_isLinked = true, _reconnectCount++});
+        }
+        setState(() => _netInfo = response.body);
+      } on TimeoutException {
+        setState(() => _netInfo = '认证服务器超时未响应！');
+        _isLinked = false;
+        _reconnectCount++;
+        _disconnection++;
+      } catch (e) {
+        setState(() {
+          _isLinked = false;
+          _netInfo = e.toString();
+          _reconnectCount++;
+          _disconnection++;
+        });
       }
-      setState(() => _netInfo = response.body);
-    } on TimeoutException {
-      setState(() => _netInfo = '认证服务器超时未响应！');
-    } catch (e) {
-      setState(() => _netInfo = e.toString());
     }
+
+    link();
+    Timer.periodic(
+      Duration(milliseconds: (1000 * reconnectInterval).toInt()),
+      (timer) => link(),
+    );
   }
 
   @override
@@ -151,6 +153,10 @@ class _HomeState extends State<_Home> {
         title: const Text(title),
         actions: [
           IconButton(
+            onPressed: () => Navigator.pushNamed(context, '/settings'),
+            icon: const Icon(Icons.settings),
+          ),
+          IconButton(
             onPressed: () => launchUrl(Uri.parse(
                 'https://github.com/Yue-plus/JvtcCampusNetworkDialer')),
             icon: const Icon(Icons.info),
@@ -166,10 +172,11 @@ class _HomeState extends State<_Home> {
               size: 256,
               color: _isLinked ? Colors.green : Colors.yellow,
             ),
-            Text(todayInfo, style: const TextStyle(color: Colors.grey)),
+            Text(todayInfo),
+            const SizedBox(height: 12),
             Text(_netInfo, style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 32),
-            _buttonGroup(),
+            const SizedBox(height: 12),
+            Text('本次运行已自动重播 $_reconnectCount 次，其中失败 $_disconnection 次'),
           ],
         ),
       ),

@@ -94,18 +94,17 @@ class _SettingState extends State<Settings> {
     );
   }
 
-  /// 保存按钮
-  Container _saveButton() {
-    return Container(
-      width: 800,
-      padding: const EdgeInsets.only(top: 32),
-      child: ElevatedButton(
-        onPressed: () => _formKey.currentState!.validate() ? _save() : null,
-        child: const Padding(
-          padding: EdgeInsets.all(8),
-          child: Text('保存', style: TextStyle(fontSize: 18)),
-        ),
-      ),
+  /// 自动重连间隔
+  late double reconnectInterval;
+
+  Slider _reconnectIntervalSlider() {
+    return Slider(
+      min: 0.5,
+      max: 30.0,
+      divisions: 59,
+      value: reconnectInterval,
+      label: reconnectInterval.toString(),
+      onChanged: (v) => setState(() => reconnectInterval = v),
     );
   }
 
@@ -114,6 +113,7 @@ class _SettingState extends State<Settings> {
     prefs.setString('stuNum', stuNum.trim());
     prefs.setString('isp', isp.toString());
     prefs.setString('password', password.trim());
+    prefs.setDouble('reconnectInterval', reconnectInterval);
     Navigator.pop(context);
   }
 
@@ -123,7 +123,8 @@ class _SettingState extends State<Settings> {
     // 初始化本类成员变量
     authHost = prefs.getString('authHost') ?? '10.31.0.10:801';
     stuNum = prefs.getString('stuNum') ?? '';
-    password = password = prefs.getString('password') ?? '';
+    password = prefs.getString('password') ?? '';
+    reconnectInterval = prefs.getDouble('reconnectInterval') ?? 8.0;
 
     // 初始化界面
     _authHostController.text = authHost;
@@ -150,7 +151,12 @@ class _SettingState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('设置')),
+      appBar: AppBar(
+        title: const Text('设置'),
+        actions: [
+          IconButton(onPressed: () => _save(), icon: const Icon(Icons.save))
+        ],
+      ),
       body: Center(
         child: Container(
           width: 800,
@@ -168,11 +174,18 @@ class _SettingState extends State<Settings> {
                   children: [
                     Expanded(child: _stuNumTextFormField()),
                     const SizedBox(width: 8),
+                    const Text('选择网络运营商：'),
                     _ispDropdownButton(),
                   ],
                 ),
                 _passwordFormField(),
-                _saveButton(),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text('每 $reconnectInterval 秒自动重播：'),
+                    Expanded(child: _reconnectIntervalSlider()),
+                  ],
+                ),
               ],
             ),
           ),
