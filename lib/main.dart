@@ -176,7 +176,7 @@ class _HomeState extends State<_Home> {
             const SizedBox(height: 12),
             Text(_netInfo, style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 12),
-            Text('本次运行已自动重播 $_reconnectCount 次，其中失败 $_disconnection 次'),
+            Text('本次运行已自动重拨 $_reconnectCount 次，其中失败 $_disconnection 次'),
           ],
         ),
       ),
